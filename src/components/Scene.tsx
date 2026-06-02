@@ -14,7 +14,6 @@ const MONITOR_CAMERA = { position: new Vector3(0, 0.4, 0.3), target: new Vector3
 
 function OrbitTarget() {
   const ref = useRef<Mesh>(null)
-  const controlsRef = useRef<any>(null)
 
   useFrame(({ controls }) => {
     if (ref.current && controls) {
