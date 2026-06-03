@@ -1,23 +1,23 @@
 import { Desk } from './Desk'
 import { Bookshelf } from './Bookshelf'
+import { useScene } from './SceneContext'
 
-interface RoomProps {
-  onBookshelfClick: () => void
-  onMonitorClick: () => void
-  onMissClick: () => void
-}
+export function Room() {
+  const { view, setView } = useScene()
 
-export function Room({ onBookshelfClick, onMonitorClick, onMissClick }: RoomProps) {
   return (
     <group position={[0, 0, -0.5]}>
-      {/* Infinite white ground plane */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.8, 0]} receiveShadow onClick={onMissClick}>
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -0.8, 0]}
+        receiveShadow
+        onClick={() => { if (view !== 'room') setView('room') }}
+      >
         <planeGeometry args={[100, 100]} />
         <meshStandardMaterial color="#ffffff" />
       </mesh>
-
-      <Desk onMonitorClick={onMonitorClick} />
-      <Bookshelf onClick={onBookshelfClick} />
+      <Desk />
+      <Bookshelf />
     </group>
   )
 }
