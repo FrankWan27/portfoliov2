@@ -13,7 +13,7 @@ const BOOKSHELF_CAMERA = { position: new Vector3(0.3, 0.3, 0.7), target: new Vec
 const MONITOR_CAMERA = { position: new Vector3(0, 0.4, 0.3), target: new Vector3(0, 0.4, -0.85) }
 
 function SceneContent() {
-  const { view, setView, selectedProject } = useScene()
+  const { view, selectedProject } = useScene()
 
   const cameraConfig = view === 'room' ? DESK_CAMERA : view === 'bookshelf' ? BOOKSHELF_CAMERA : MONITOR_CAMERA
 

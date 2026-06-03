@@ -64,7 +64,7 @@ function useVideoOnHover(src: string | undefined, hovered: boolean) {
 export function Book({ project, position, onClick }: BookProps) {
   const group = useRef<Group>(null)
   const [hovered, setHovered] = useState(false)
-  const { view, selectedProject } = useScene()
+  const { selectedProject } = useScene()
 
   const interactable = !selectedProject
   const effectiveHover = hovered && interactable
