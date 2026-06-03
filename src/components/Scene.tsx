@@ -66,7 +66,7 @@ export function Scene() {
 }
 
 function SceneInner() {
-  const { view, setView, setSelectedProject } = useScene()
+  const { view, setView, selectedProject, setSelectedProject } = useScene()
   const [debugVisible, setDebugVisible] = useState(false)
 
   useEffect(() => {
@@ -84,7 +84,13 @@ function SceneInner() {
       <Canvas
         shadows
         camera={{ position: [-0.15, 0.60, 1.80], fov: 50 }}
-        onPointerMissed={() => { setSelectedProject(null); if (view !== 'room') setView('room') }}
+        onPointerMissed={() => {
+          if (selectedProject) {
+            setSelectedProject(null)
+          } else if (view !== 'room') {
+            setView('room')
+          }
+        }}
       >
         <SceneContent />
         <CameraDebugPanel visible={debugVisible} />

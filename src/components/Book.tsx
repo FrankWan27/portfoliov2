@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect, Suspense } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Group, VideoTexture, Texture } from 'three'
 import { useFrame } from '@react-three/fiber'
 import { Text, useTexture } from '@react-three/drei'
 import type { ProjectData } from './types'
+import { useScene } from './SceneContext'
 
 interface BookProps {
   project: ProjectData
@@ -44,22 +45,41 @@ function useVideoOnHover(src: string | undefined, hovered: boolean) {
     }
   }, [hovered])
 
+  useEffect(() => {
+    return () => {
+      if (videoRef.current) {
+        videoRef.current.pause()
+        videoRef.current.src = ''
+        videoRef.current = null
+      }
+      if (texture) {
+        texture.dispose()
+      }
+    }
+  }, [])
+
   return texture
 }
 
 export function Book({ project, position, onClick }: BookProps) {
   const group = useRef<Group>(null)
   const [hovered, setHovered] = useState(false)
+  const { view, selectedProject } = useScene()
+
+  const interactable = !selectedProject
+  const effectiveHover = hovered && interactable
 
   const staticTexture = useTexture(project.image)
-  const videoTexture = useVideoOnHover(project.video, hovered)
+  const videoTexture = useVideoOnHover(project.video, effectiveHover)
 
-  const activeTexture: Texture = hovered && videoTexture ? videoTexture : staticTexture
+  const activeTexture: Texture = effectiveHover && videoTexture ? videoTexture : staticTexture
 
   useFrame(() => {
     if (!group.current) return
-    const targetZ = hovered ? 0.08 : 0
+    const targetZ = effectiveHover ? 0.15 : 0
+    const targetRot = effectiveHover ? 0.10 : 0
     group.current.position.z += (targetZ - group.current.position.z) * 0.1
+    group.current.rotation.x += (targetRot - group.current.rotation.x) * 0.1
   })
 
   return (
@@ -69,7 +89,7 @@ export function Book({ project, position, onClick }: BookProps) {
       onPointerOver={(e) => {
         e.stopPropagation()
         setHovered(true)
-        document.body.style.cursor = 'pointer'
+        if (interactable) document.body.style.cursor = 'pointer'
       }}
       onPointerOut={() => {
         setHovered(false)
@@ -77,16 +97,16 @@ export function Book({ project, position, onClick }: BookProps) {
       }}
       onClick={(e) => {
         e.stopPropagation()
-        onClick?.()
+        if (interactable) onClick?.()
       }}
     >
       <mesh castShadow>
-        <boxGeometry args={[0.12, 0.35, 0.25]} />
+        <boxGeometry args={[0.07, 0.35, 0.25]} />
         <meshStandardMaterial color={project.color} />
       </mesh>
       {/* Cover image on the front face (+X side) */}
-      <mesh position={[0.061, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <planeGeometry args={[0.23, 0.33]} />
+      <mesh position={[0.036, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <planeGeometry args={[0.2, 0.2]} />
         <meshStandardMaterial map={activeTexture} />
       </mesh>
       {/* Title on spine (+Z face) */}

@@ -3,6 +3,7 @@ export interface ProjectData {
   color: string
   description: string
   url?: string
+  demo?: string
   image: string
   video?: string
 }
