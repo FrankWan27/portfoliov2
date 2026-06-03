@@ -1,6 +1,6 @@
 export function Desk({ onMonitorClick }: { onMonitorClick: () => void }) {
   return (
-    <group position={[0, 0, 0]}>
+    <group name="desk"position={[0, 0, 0]}>
       {/* L-shaped desktop - main surface */}
       <mesh position={[0, 0, 0]} castShadow receiveShadow>
         <boxGeometry args={[2.4, 0.08, 1.0]} />
@@ -13,27 +13,17 @@ export function Desk({ onMonitorClick }: { onMonitorClick: () => void }) {
         <meshStandardMaterial color="#5c3a1e" />
       </mesh>
 
-      {/* Legs - main section */}
-      {[[-1.1, -0.4, -0.4], [-1.1, -0.4, 0.4], [1.1, -0.4, 0.4]].map(
+      {/* Legs */}
+      {[[-1.1, -0.4, 0], [1.1, -0.4, 0], [0.9, -0.4, 1.2]].map(
         ([x, y, z], i) => (
-          <mesh key={`main-${i}`} position={[x, y, z]} castShadow>
+          <mesh key={`leg-${i}`} position={[x, y, z]} castShadow>
             <boxGeometry args={[0.06, 0.8, 0.06]} />
             <meshStandardMaterial color="#3d2510" />
           </mesh>
         )
       )}
 
-      {/* Legs - extension */}
-      {[[1.1, -0.4, 1.2], [1.1, -0.4, 0.6]].map(
-        ([x, y, z], i) => (
-          <mesh key={`ext-${i}`} position={[x, y, z]} castShadow>
-            <boxGeometry args={[0.06, 0.8, 0.06]} />
-            <meshStandardMaterial color="#3d2510" />
-          </mesh>
-        )
-      )}
-
-      {/* Samsung G7 Odyssey ultrawide monitor */}
+      {/* Monitor */}
       <group position={[0, 0.4, -0.35]} onClick={(e) => { e.stopPropagation(); onMonitorClick() }}>
         {/* Screen */}
         <mesh castShadow>
